@@ -98,30 +98,33 @@ jobs:
           files: build/xmrig-${{ github.ref_name }}-macos-x64.tar.gz
 
   build-windows:
-    runs-on: windows-2022
-    steps:
-      - uses: actions/checkout@v4
+  runs-on: windows-2022
+  steps:
+    - uses: actions/checkout@v4
 
-      - name: Clone xmrig-deps
-        run: git clone --depth 1 https://github.com/xmrig/xmrig-deps.git C:\xmrig-deps
+    - name: Clone xmrig-deps
+      run: git clone --depth 1 https://github.com/xmrig/xmrig-deps.git C:\xmrig-deps
 
-      - name: Configure CMake
-        run: |
-          mkdir build
-          cd build
-          cmake .. -G "Visual Studio 17 2022" -A x64 -DXMRIG_DEPS=C:\xmrig-deps\msvc2022\x64
+    - name: Configure CMake
+      run: |
+        mkdir build
+        cd build
+        cmake .. -G "Visual Studio 17 2022" -A x64 -DXMRIG_DEPS=C:\xmrig-deps\msvc2022\x64
 
-      - name: Build
-        run: cmake --build build --config Release
+    - name: Build
+      run: cmake --build build --config Release --target xmrig
 
-      - name: Package
-        shell: cmd
-        run: |
-          cd build\Release
-          7z a xmrig-${{ github.ref_name }}-win64.zip xmrig.exe WinRing0x64.sys *.cmd
+    - name: Copy files
+      run: |
+        Copy-Item -Path build\Release\xmrig.exe -Destination .
+        Copy-Item -Path bin\WinRing0\WinRing0x64.sys -Destination .
+        Copy-Item -Path src\config.json -Destination .
 
-      - name: Upload to Release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v1
-        with:
-          files: build/Release/xmrig-${{ github.ref_name }}-win64.zip
+    - name: Package
+      run: 7z a -tzip xmrig-${{ github.ref_name }}-win64.zip xmrig.exe config.json WinRing0x64.sys
+
+    - name: Upload to Release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: xmrig-${{ github.ref_name }}-win64.zip
