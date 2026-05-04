@@ -120,6 +120,18 @@ RandomX_ConfigurationYada::RandomX_ConfigurationYada()
 	ArgonIterations = 4;
 }
 
+// These settings are compatible with all Hush Smart Chains by default
+// For more info: https://hush.is/hsc-creator
+// https://git.hush.is/hush/hush3/src/branch/dragonx/doc/randomx.md
+RandomX_ConfigurationDragonX::RandomX_ConfigurationDragonX()
+{
+	ArgonIterations = 5;
+	ArgonSalt = "RandomXHUSH\x03";
+	ProgramSize = 512;
+	ProgramIterations = 4096;
+	ProgramCount = 16;
+}
+
 RandomX_ConfigurationBase::RandomX_ConfigurationBase()
 	: ArgonIterations(3)
 	, ArgonLanes(1)
@@ -388,6 +400,7 @@ RandomX_ConfigurationArqma RandomX_ArqmaConfig;
 RandomX_ConfigurationGraft RandomX_GraftConfig;
 RandomX_ConfigurationSafex RandomX_SafexConfig;
 RandomX_ConfigurationYada RandomX_YadaConfig;
+RandomX_ConfigurationDragonX RandomX_DragonXConfig;
 
 alignas(64) RandomX_ConfigurationBase RandomX_CurrentConfig;
 
