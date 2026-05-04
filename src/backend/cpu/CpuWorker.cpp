@@ -475,17 +475,16 @@ else if (job.algorithm().family() == Algorithm::RANDOM_X) {
         }
     }
 }
-else {
-    // ── Fallback для других алгоритмов (CryptoNight и т.д.) ──
-    const uint64_t value = *reinterpret_cast<uint64_t*>(m_hash + (i * 32) + 24);
-    if (value < job.target()) {
-        if (m_job.isSoloMining()) {
-            JobResults::submit(JobResult(job, current_solo_nonces + i * 32, m_hash + (i * 32)));
-        } else {
-            JobResults::submit(job, current_job_nonces[i], m_hash + (i * 32), nullptr);
-        }
-    }
-}
+                    else {
+                        // ── Fallback для других алгоритмов (CryptoNight и т.д.) ──
+                        const uint64_t value = *reinterpret_cast<uint64_t*>(m_hash + (i * 32) + 24);
+                        if (value < job.target()) {
+                            if (m_job.isSoloMining()) {
+                                JobResults::submit(JobResult(job, current_solo_nonces + i * 32, m_hash + (i * 32)));
+                            } else {
+                                JobResults::submit(job, current_job_nonces[i], m_hash + (i * 32), nullptr);
+                            }
+                        }
                     }
                 }
                 m_count += N;
